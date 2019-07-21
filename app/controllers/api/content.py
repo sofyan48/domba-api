@@ -9,6 +9,7 @@ class GetContentData(Resource):
         results = list()
         try:
             data_content = model.read_all("content")
+            print(data_content)
         except Exception as e:
             return response(401, message=str(e))
         else:
@@ -65,6 +66,10 @@ class ContentAdd(Resource):
 
         key = utils.get_last_key("content")
         
+        # Check Relation
+        if model.check_relation("record", record):
+            return response(401, message="Relation to Record error Check Your Key")
+        # Validation
         if validation.content_validation(record, content):
             return response(401, message="Named Error")
         if validation.count_character(content):
@@ -94,6 +99,11 @@ class ContentEdit(Resource):
         content = content.lower()
         record = args["id_record"]
         
+        # Check Relation
+        if model.check_relation("record", record):
+            return response(401, message="Relation to Record error Check Your Key")
+        
+        # Validation
         if validation.content_validation(record, content):
             return response(401, message="Named Error")
         if validation.count_character(content):

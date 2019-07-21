@@ -10,6 +10,7 @@ class GetRecordData(Resource):
         results = list()
         try:
             data_record = model.read_all("record")
+            print(data_record)
         except Exception as e:
             return response(401, message=str(e))
         
@@ -73,6 +74,14 @@ class RecordAdd(Resource):
 
         key = utils.get_last_key("record")
 
+        # Check Relation Zone
+        if model.check_relation("zone", zone):
+            return response(401, message="Relation to zone error Check Your Key")
+        if model.check_relation("type", types):
+            return response(401, message="Relation to type error Check Your Key")
+        if model.check_relation("ttl", ttl):
+            return response(401, message="Relation to ttl error Check Your Key")
+
         # validation
         if validation.record_validation(record):
             return response(401, message="Named Error")
@@ -121,6 +130,15 @@ class RecordEdit(Resource):
             serial = True
         else:
             serial = False
+
+        # Check Relation Zone
+        if model.check_relation("zone", zone):
+            return response(401, message="Relation to zone error Check Your Key")
+        if model.check_relation("type", types):
+            return response(401, message="Relation to type error Check Your Key")
+        if model.check_relation("ttl", ttl):
+            return response(401, message="Relation to ttl error Check Your Key")
+        
         # validation
         if validation.record_validation(record):
             return response(401, message="Named Error")
@@ -153,7 +171,8 @@ class RecordEdit(Resource):
 class RecordDelete(Resource):
     def delete(self, key):
         try:
-            data = model.delete("record", key)
+            # data = model.delete("record", key)
+            data = model.record_delete(key)
         except Exception as e:
             return response(401, message=str(e))
         else:
