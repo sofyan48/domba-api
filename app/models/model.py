@@ -74,4 +74,4 @@ def update(stored, key, data):
         raise e
     else:
         return data
-        
+

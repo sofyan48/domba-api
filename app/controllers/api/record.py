@@ -55,7 +55,7 @@ class RecordAdd(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('record', type=str, required=True)
-        parser.add_argument('serial', type=bool, required=True)
+        parser.add_argument('serial', type=int, required=True)
         parser.add_argument('zone', type=str, required=True)
         parser.add_argument('ttl', type=str, required=True)
         parser.add_argument('type', type=str, required=True)
@@ -66,6 +66,10 @@ class RecordAdd(Resource):
         types = args["type"]
         ttl = args["ttl"]
         serial = args['serial']
+        if serial:
+            serial = True
+        else:
+            serial = False
 
         key = utils.get_last_key("record")
 
@@ -74,6 +78,10 @@ class RecordAdd(Resource):
             return response(401, message="Named Error")
         if validation.count_character(record):
             return response(401, message="Count Character Error")
+        if validation.record_cname_duplicate(record, types, zone):
+            return response(401, message="Cname Record Duplicate")
+        if validation.record_mx_duplicate(record, types, zone):
+            return response(401, message="MX Record Duplicate")
         # end validation
 
         data = {
@@ -98,7 +106,7 @@ class RecordEdit(Resource):
     def put(self, key):
         parser = reqparse.RequestParser()
         parser.add_argument('record', type=str, required=True)
-        parser.add_argument('serial', type=bool, required=True)
+        parser.add_argument('serial', type=int, required=True)
         parser.add_argument('zone', type=str, required=True)
         parser.add_argument('ttl', type=str, required=True)
         parser.add_argument('type', type=str, required=True)
@@ -109,12 +117,19 @@ class RecordEdit(Resource):
         types = args["type"]
         ttl = args["ttl"]
         serial = args['serial']
-
+        if serial:
+            serial = True
+        else:
+            serial = False
         # validation
         if validation.record_validation(record):
             return response(401, message="Named Error")
         if validation.count_character(record):
             return response(401, message="Count Character Error")
+        if validation.record_cname_duplicate(record, types, zone):
+            return response(401, message="Cname Record Duplicate")
+        if validation.record_mx_duplicate(record, types, zone):
+            return response(401, message="MX Record Duplicate")
         # end validation
 
         data = {
