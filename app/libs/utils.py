@@ -35,8 +35,8 @@ def check_unique(stored, field, value, key=None):
 def get_last_key(stored):
     try:
         all_data = model.read_all_key(stored)
-    except Exception as e:
-        print(e)
+    except Exception:
+        return str(1)
     else:
         key = max(all_data)
         return str(key+1)

@@ -1,7 +1,7 @@
 from app import etcd_client as client
 from etcd import EtcdKeyNotFound
 from etcd import EtcdException
-import ast
+import ast, json
 
 
 def create_dirs(stored):
@@ -35,7 +35,8 @@ def read_by_id(stored, key):
     except EtcdKeyNotFound as e:
         raise e
     else:
-        return a.value
+        data = ast.literal_eval(a.value)
+        return data
 
 def read_all(stored):
     result = list()
