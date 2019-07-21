@@ -77,8 +77,8 @@ def count_character(name):
 def record_cname_duplicate(record, types, zone):
     try:
         data_record = model.read_all("record")
-    except Exception as e:
-        raise e
+    except Exception:
+        pass
     else:
         result = False
         for i in data_record:
@@ -93,7 +93,7 @@ def record_mx_duplicate(record, types, zone):
     try:
         data_record = model.read_all("record")
     except Exception as e:
-        raise e
+        pass
     else:
         result = False
         for i in data_record:
@@ -110,8 +110,8 @@ def content_validation(record, content):
     try:
         data_record = model.read_by_id("record", record)
         data_type = model.read_by_id("type", data_record['type'])
-    except Exception as e:
-        raise e
+    except Exception:
+        pass
     else:
         if data_type['value'] == 'A':
             valid = a_content_validation(content)

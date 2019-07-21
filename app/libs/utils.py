@@ -18,18 +18,22 @@ def get_datetime():
     return str(now)
 
 def check_unique(stored, field, value, key=None):
-    all_data = model.read_all(stored)
     results = False
-    for i in all_data:
-        if i[field] == value:
-            if key is not None:
-                if key == i['key']:
-                    results = False
+    try:
+        all_data = model.read_all(stored)
+    except Exception:
+        results = False
+    else:
+        for i in all_data:
+            if i[field] == value:
+                if key is not None:
+                    if key == i['key']:
+                        results = False
+                    else:
+                        results = True
                 else:
                     results = True
-            else:
-                results = True
-            break
+                break
     return results
 
 def get_last_key(stored):
@@ -40,3 +44,12 @@ def get_last_key(stored):
     else:
         key = max(all_data)
         return str(key+1)
+
+
+def check_record_serial(key):
+    try:
+        record = model.read_by_id("record", key)
+    except Exception as e:
+        raise e
+    else:
+        return record['serial']
