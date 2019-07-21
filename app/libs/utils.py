@@ -4,6 +4,10 @@ import json
 import datetime
 
 
+def soa_time_set():
+    date = datetime.datetime.now().strftime("%Y%m%d")
+    return date
+
 def get_http(url, param=None, header=None):
     json_data = None
     if param:
@@ -11,7 +15,6 @@ def get_http(url, param=None, header=None):
     get_func = requests.get(url, params=json_data, headers=header)
     data = get_func.json()
     return data
-
 
 def get_datetime():
     now = datetime.datetime.now()

@@ -74,7 +74,7 @@ def update(stored, key, data):
         return data
 
 def content_by_record(record):
-    data = dict()
+    data = list()
     try:
         content_data = read_all("content")
     except Exception as e:
@@ -82,7 +82,7 @@ def content_by_record(record):
     else:
         for i in content_data:
             if i['record'] == record:
-                data = i
+                data.append(i)
     return data
 
 def serial_by_record(record):
@@ -113,7 +113,7 @@ def record_by_zone(zone):
                 try:
                     content_data = content_by_record(i['key'])
                 except Exception:
-                    content_data = {}
+                    content_data = []
                 if i['serial']:
                     try:
                         serial_data = serial_by_record(i['key'])
@@ -162,18 +162,18 @@ def record_delete(key):
         except Exception as e:
             print(e)
         else:
-            if record_data['serial']:
-                serial_data = serial_by_record(key)
-                for i in serial_data:
-                    try:
-                        delete("serial", i['key'])
-                    except Exception as e:
-                        raise e
-            try:
-                delete("content", conten_data['key'])
-            except Exception as e:
-                print(e)
-        
+            for ci in conten_data:
+                if record_data['serial']:
+                    serial_data = serial_by_record(key)
+                    for i in serial_data:
+                        try:
+                            delete("serial", i['key'])
+                        except Exception as e:
+                            raise e
+                try:
+                    delete("content", ci['key'])
+                except Exception as e:
+                    print(e)
         try:
             result = delete("record", key)
         except Exception as e:
@@ -181,4 +181,17 @@ def record_delete(key):
         else:
             return result
 
+def get_user_by_project_id(project_id):
+    try:
+        data_user = read_all("user")
+    except Exception as e:
+        raise e
+    else:
+        data = {}
+        for i in data_user:
+            if i['project_id'] == project_id:
+                data = i
+                break
+        return data
+        
         
