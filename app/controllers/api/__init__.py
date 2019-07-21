@@ -6,7 +6,7 @@ from .ttl import *
 from .type import *
 from .zone import *
 from .record import *
-
+from .content import *
 
 api_blueprint = Blueprint("api", __name__, url_prefix='/api')
 api = Api(api_blueprint)
@@ -19,20 +19,17 @@ api.add_resource(GetUserDataId, "/user/list/<key>")
 api.add_resource(UserUpdate, "/user/edit/<key>")
 api.add_resource(UserDelete, "/user/delete/<key>")
 
-
 api.add_resource(GetTtlData, "/ttl/list")
 api.add_resource(GetTtlDataId, "/ttl/list/<key>")
 api.add_resource(TtlAdd, "/ttl/add")
 api.add_resource(TtlEdit, "/ttl/edit/<key>")
 api.add_resource(TtlDelete, "/ttl/delete/<key>")
 
-
 api.add_resource(GetTypeData, "/type/list")
 api.add_resource(GetTypeDataId, "/type/list/<key>")
 api.add_resource(TypeAdd, "/type/add")
 api.add_resource(TypeEdit, "/type/edit/<key>")
 api.add_resource(TypeDelete, "/type/delete/<key>")
-
 
 api.add_resource(GetZoneData, "/zone/list")
 api.add_resource(GetZoneDataId, "/zone/list/<key>")
@@ -45,3 +42,9 @@ api.add_resource(GetRecordDataId, "/record/list/<key>")
 api.add_resource(RecordAdd, "/record/add")
 api.add_resource(RecordEdit, "/record/edit/<key>")
 api.add_resource(RecordDelete, "/record/delete/<key>")
+
+api.add_resource(GetContentData, "/content/list")
+api.add_resource(GetContentDataId, "/content/list/<key>")
+api.add_resource(ContentAdd, "/content/add")
+api.add_resource(ContentEdit, "/content/edit/<key>")
+api.add_resource(ContentDelete, "/content/delete/<key>")
