@@ -40,7 +40,7 @@ class TtlAdd(Resource):
         except Exception as e:
             return response(401, message=str(e))
         else:
-            return response(200, data=data, message="OK")
+            return response(200, data=data, message="Inserted")
 
 
 class TtlEdit(Resource):
@@ -58,7 +58,7 @@ class TtlEdit(Resource):
         except Exception as e:
             return response(401, message=str(e))
         else:
-            return response(200, data=data, message="Inserted")
+            return response(200, data=data, message="Edited")
         
 
 class TtlDelete(Resource):
