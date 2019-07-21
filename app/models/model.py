@@ -4,15 +4,6 @@ from etcd import EtcdException
 import ast, json
 
 
-def create_dirs(stored):
-    try:
-        client.write("/"+stored, None, dir=True)
-    except EtcdException as e:
-        print(e)
-        return None
-    else:
-        return True
-
 def insert_data(stored, key, data):
     try:
         data = client.write("/"+stored+"/"+key, data)
@@ -50,6 +41,13 @@ def read_all(stored):
             result.append(data)
     return result
 
+def check_relation(stored, key):
+    try:
+        read_by_id(stored, key)
+    except Exception as e:
+        return True
+    else:
+        return False
 
 def read_all_key(stored):
     result = list()
@@ -75,3 +73,112 @@ def update(stored, key, data):
     else:
         return data
 
+def content_by_record(record):
+    data = dict()
+    try:
+        content_data = read_all("content")
+    except Exception as e:
+        raise e
+    else:
+        for i in content_data:
+            if i['record'] == record:
+                data = i
+    return data
+
+def serial_by_record(record):
+    result = list()
+    try:
+        content_data = read_all("serial")
+    except Exception as e:
+        raise e
+    else:
+        for i in content_data:
+            if i['record'] == record:
+                result.append(i)
+    return result
+
+
+def record_by_zone(zone):
+    result = list()
+    try:
+        data_rec = read_all("record")
+    except Exception:
+        data_rec = []
+    else:
+        for i in data_rec:
+            data = None
+            if i['zone'] == zone:
+                type_data = read_by_id("type", i['type'])
+                ttl_data = read_by_id("ttl", i['ttl'])
+                try:
+                    content_data = content_by_record(i['key'])
+                except Exception:
+                    content_data = {}
+                if i['serial']:
+                    try:
+                        serial_data = serial_by_record(i['key'])
+                    except Exception:
+                        data = {
+                            "key": i['key'],
+                            "value": i['value'],
+                            "created_at": i['created_at'],
+                            "type": type_data,
+                            "ttl": ttl_data,
+                            "content": content_data,
+                            "serial": []
+                        }
+                    else:
+                        data = {
+                            "key": i['key'],
+                            "value": i['value'],
+                            "created_at": i['created_at'],
+                            "type": type_data,
+                            "ttl": ttl_data,
+                            "content": content_data,
+                            "serial": serial_data
+                        }
+                else:
+                    data = {
+                        "key": i['key'],
+                        "value": i['value'],
+                        "created_at": i['created_at'],
+                        "type": type_data,
+                        "ttl": ttl_data,
+                        "content": content_data
+                    }
+            if data is not None:
+                result.append(data)
+        return result
+
+
+def record_delete(key):
+    try:
+        record_data = read_by_id("record", key)
+    except Exception as e:
+        raise e
+    else:
+        try:
+            conten_data = content_by_record(key)
+        except Exception as e:
+            print(e)
+        else:
+            if record_data['serial']:
+                serial_data = serial_by_record(key)
+                for i in serial_data:
+                    try:
+                        delete("serial", i['key'])
+                    except Exception as e:
+                        raise e
+            try:
+                delete("content", conten_data['key'])
+            except Exception as e:
+                print(e)
+        
+        try:
+            result = delete("record", key)
+        except Exception as e:
+            raise e
+        else:
+            return result
+
+        
