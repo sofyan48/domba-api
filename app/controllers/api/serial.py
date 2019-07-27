@@ -2,9 +2,11 @@ from flask_restful import Resource, reqparse
 from app.helpers.rest import response
 from app.models import model
 from app.libs import utils
+from app.middlewares import auth
 
 
 class GetSerialData(Resource):
+    @auth.auth_required
     def get(self):
         result = list()
         try:
@@ -31,6 +33,7 @@ class GetSerialData(Resource):
 
 
 class GetSerialDataId(Resource):
+    @auth.auth_required
     def get(self, key):
         try:
             data_serial = model.read_by_id("serial", key)
@@ -54,6 +57,7 @@ class GetSerialDataId(Resource):
 
 
 class SerialAdd(Resource):
+    @auth.auth_required
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('value', type=str, required=True)
@@ -89,6 +93,7 @@ class SerialAdd(Resource):
 
 
 class SerialEdit(Resource):
+    @auth.auth_required
     def put(self, key):
         parser = reqparse.RequestParser()
         parser.add_argument('value', type=str, required=True)
@@ -122,6 +127,7 @@ class SerialEdit(Resource):
         
 
 class SerialDelete(Resource):
+    @auth.auth_required
     def delete(self, key):
         try:
             data = model.delete("serial", key)

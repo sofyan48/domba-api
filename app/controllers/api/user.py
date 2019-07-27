@@ -2,9 +2,11 @@ from flask_restful import Resource, reqparse
 from app.helpers.rest import response
 from app.models import model
 from app.libs import utils
+from app.middlewares import auth
 
 
 class GetUserData(Resource):
+    @auth.auth_required
     def get(self):
         try:
             data = model.read_all("user")
@@ -14,6 +16,7 @@ class GetUserData(Resource):
             return response(200, data=data)
 
 class GetUserDataId(Resource):
+    @auth.auth_required
     def get(self, key):
         try:
             data = model.read_by_id("user", key)
@@ -24,6 +27,7 @@ class GetUserDataId(Resource):
 
 
 class UserDelete(Resource):
+    @auth.auth_required
     def delete(self, key):
         try:
             data = model.delete("user", key)
@@ -34,6 +38,7 @@ class UserDelete(Resource):
         
 
 class UserSignUp(Resource):
+    @auth.auth_required
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str, required=True)
@@ -63,6 +68,7 @@ class UserSignUp(Resource):
 
 
 class UserUpdate(Resource):
+    @auth.auth_required
     def put(self, key):
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str, required=True)

@@ -5,6 +5,7 @@ from app.libs import utils
 from app.libs import validation
 from app.helpers import command
 from app.helpers import producer
+from app.middlewares import auth
 import os
 
 
@@ -103,6 +104,7 @@ def add_cname_default(zone_key, record_key, zone_name):
         return response(401, message=str(e))
 
 class GetDomainData(Resource):
+    @auth.auth_required
     def get(self):
         results = list()
         try:
@@ -125,6 +127,7 @@ class GetDomainData(Resource):
 
 
 class GetDomainDataByProjectId(Resource):
+    @auth.auth_required
     def get(self, project_id):
         results = list()
         user = dict()
@@ -158,6 +161,7 @@ class GetDomainDataByProjectId(Resource):
 
 
 class GetDomainDataId(Resource):
+    @auth.auth_required
     def get(self, key):
         try:
             data_zone = model.read_by_id("zone", key)
@@ -177,6 +181,7 @@ class GetDomainDataId(Resource):
 
 
 class DeleteDomain(Resource):
+    @auth.auth_required
     def delete(self, key):
         try:
             record = model.record_by_zone(key)
@@ -197,6 +202,7 @@ class DeleteDomain(Resource):
 
 
 class AddDomain(Resource):
+    @auth.auth_required
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('zone', type=str, required=True)
@@ -254,6 +260,7 @@ class AddDomain(Resource):
 
 
 class ViewCommand(Resource):
+    @auth.auth_required
     def get(self, key):
         zone_data = model.read_by_id("zone", key)['value']
         command_data = command.config_zone(zone_data, key)

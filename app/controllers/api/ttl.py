@@ -2,9 +2,11 @@ from flask_restful import Resource, reqparse
 from app.helpers.rest import response
 from app.models import model
 from app.libs import utils
+from app.middlewares import auth
 
 
 class GetTtlData(Resource):
+    @auth.auth_required
     def get(self):
         try:
             data = model.read_all("ttl")
@@ -15,6 +17,7 @@ class GetTtlData(Resource):
 
 
 class GetTtlDataId(Resource):
+    @auth.auth_required
     def get(self, key):
         try:
             data = model.read_by_id("ttl", key)
@@ -25,6 +28,7 @@ class GetTtlDataId(Resource):
 
 
 class TtlAdd(Resource):
+    @auth.auth_required
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('ttl', type=str, required=True)
@@ -44,6 +48,7 @@ class TtlAdd(Resource):
 
 
 class TtlEdit(Resource):
+    @auth.auth_required
     def put(self, key):
         parser = reqparse.RequestParser()
         parser.add_argument('ttl', type=str, required=True)
@@ -62,6 +67,7 @@ class TtlEdit(Resource):
         
 
 class TtlDelete(Resource):
+    @auth.auth_required
     def delete(self, key):
         try:
             data = model.delete("ttl", key)

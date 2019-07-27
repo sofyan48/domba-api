@@ -3,8 +3,10 @@ from app.helpers.rest import response
 from app.models import model
 from app.libs import utils
 from app.libs import validation
+from app.middlewares import auth
 
 class GetContentData(Resource):
+    @auth.auth_required
     def get(self):
         results = list()
         try:
@@ -32,6 +34,7 @@ class GetContentData(Resource):
 
 
 class GetContentDataId(Resource):
+    @auth.auth_required
     def get(self, key):
         try:
             data_content = model.read_by_id("content", key)
@@ -55,6 +58,7 @@ class GetContentDataId(Resource):
 
 
 class ContentAdd(Resource):
+    @auth.auth_required
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('content', type=str, required=True)
@@ -90,6 +94,7 @@ class ContentAdd(Resource):
 
 
 class ContentEdit(Resource):
+    @auth.auth_required
     def put(self, key):
         parser = reqparse.RequestParser()
         parser.add_argument('content', type=str, required=True)
@@ -124,6 +129,7 @@ class ContentEdit(Resource):
         
 
 class ContentDelete(Resource):
+    @auth.auth_required
     def delete(self, key):
         try:
             data = model.delete("content", key)

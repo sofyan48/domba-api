@@ -3,9 +3,10 @@ from app.helpers.rest import response
 from app.models import model
 from app.libs import utils
 from app.libs import validation
-
+from app.middlewares import auth
 
 class GetZoneData(Resource):
+    @auth.auth_required
     def get(self):
         results = list()
         try:
@@ -26,6 +27,7 @@ class GetZoneData(Resource):
 
 
 class GetZoneDataId(Resource):
+    @auth.auth_required
     def get(self, key):
         try:
             data_zone = model.read_by_id("zone", key)
@@ -43,6 +45,7 @@ class GetZoneDataId(Resource):
 
 
 class ZoneAdd(Resource):
+    @auth.auth_required
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('zone', type=str, required=True)
@@ -75,6 +78,7 @@ class ZoneAdd(Resource):
 
 
 class ZoneEdit(Resource):
+    @auth.auth_required
     def put(self, key):
         parser = reqparse.RequestParser()
         parser.add_argument('zone', type=str, required=True)
@@ -102,6 +106,7 @@ class ZoneEdit(Resource):
         
 
 class ZoneDelete(Resource):
+    @auth.auth_required
     def delete(self, key):
         try:
             data = model.delete("zone", key)

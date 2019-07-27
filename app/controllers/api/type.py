@@ -2,9 +2,11 @@ from flask_restful import Resource, reqparse
 from app.helpers.rest import response
 from app.models import model
 from app.libs import utils
+from app.middlewares import auth
 
 
 class GetTypeData(Resource):
+    @auth.auth_required
     def get(self):
         try:
             data = model.read_all("type")
@@ -15,6 +17,7 @@ class GetTypeData(Resource):
 
 
 class GetTypeDataId(Resource):
+    @auth.auth_required
     def get(self, key):
         try:
             data = model.read_by_id("type", key)
@@ -25,6 +28,7 @@ class GetTypeDataId(Resource):
 
 
 class TypeAdd(Resource):
+    @auth.auth_required
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('type', type=str, required=True)
@@ -47,6 +51,7 @@ class TypeAdd(Resource):
 
 
 class TypeEdit(Resource):
+    @auth.auth_required
     def put(self, key):
         parser = reqparse.RequestParser()
         parser.add_argument('type', type=str, required=True)
@@ -68,6 +73,7 @@ class TypeEdit(Resource):
         
 
 class TypeDelete(Resource):
+    @auth.auth_required
     def delete(self, key):
         try:
             data = model.delete("type", key)

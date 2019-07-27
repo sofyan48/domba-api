@@ -3,9 +3,10 @@ from app.helpers.rest import response
 from app.models import model
 from app.libs import utils
 from app.libs import validation
-
+from app.middlewares import auth
 
 class GetRecordData(Resource):
+    @auth.auth_required
     def get(self):
         results = list()
         try:
@@ -32,6 +33,7 @@ class GetRecordData(Resource):
 
 
 class GetRecordDataId(Resource):
+    @auth.auth_required
     def get(self, key):
         try:
             data_record = model.read_by_id("record", key)
@@ -53,6 +55,7 @@ class GetRecordDataId(Resource):
 
 
 class RecordAdd(Resource):
+    @auth.auth_required
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('record', type=str, required=True)
@@ -112,6 +115,7 @@ class RecordAdd(Resource):
 
 
 class RecordEdit(Resource):
+    @auth.auth_required
     def put(self, key):
         parser = reqparse.RequestParser()
         parser.add_argument('record', type=str, required=True)
@@ -169,6 +173,7 @@ class RecordEdit(Resource):
         
 
 class RecordDelete(Resource):
+    @auth.auth_required
     def delete(self, key):
         try:
             # data = model.delete("record", key)
