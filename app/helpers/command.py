@@ -6,6 +6,7 @@ def config_zone(zone, zone_key):
         zone: {
             "id_zone": zone_key,
             "type": "general",
+            "command": "config",
             "general": {
                 "sendblock": {
                     "cmd": "conf-set",
@@ -53,6 +54,7 @@ def soa_default_command(soa_record_key):
     json_command = {
         zone['value']: {
             "id_zone": zone['key'],
+            "command": "zone",
             "type": "general",
             "general": {
                     "sendblock": {
@@ -86,6 +88,7 @@ def ns_default_command(record_ns_key_default):
                 zone['value']: {
                     "id_zone": zone['key'],
                     "type": "general",
+                    "command": "zone",
                     "general": {
                             "sendblock": {
                             "cmd": "zone-set",
@@ -124,6 +127,7 @@ def record_insert(key):
         json_command = {
             zone['value']: {
                 "id_zone": zone['key'],
+                "command": "zone",
                 "type": "general",
                 "general": {
                         "sendblock": {
@@ -145,6 +149,7 @@ def record_insert(key):
             zone['value']: {
                 "id_zone": zone['key'],
                 "type": "general",
+                "command": "zone",
                 "general": {
                         "sendblock": {
                         "cmd": "zone-set",
@@ -160,5 +165,6 @@ def record_insert(key):
                 }
             }
         }
+        
     return json_command
         

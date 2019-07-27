@@ -4,7 +4,8 @@ from flask_cors import CORS
 from flask_redis import FlaskRedis
 from celery import Celery
 from etcd import Client
-import os
+from kafka import KafkaProducer
+import os, json
 
 
 celery = Celery(__name__,
@@ -20,6 +21,13 @@ etcd_client = Client(host=etcd_host, port=int(etcd_port))
 redis_store = FlaskRedis()
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
+
+kafka_host = os.environ.get("KAFKA_HOST", os.getenv("KAFKA_HOST"))                                        
+kafka_port = os.environ.get("KAFKA_PORT", os.getenv("KAFKA_PORT"))
+kafka_broker = [kafka_host+":"+kafka_port]
+producer = KafkaProducer(
+                bootstrap_servers=kafka_broker,
+                value_serializer=lambda m: json.dumps(m).encode('utf-8'))
 
 def create_app():
     app = Flask(__name__)
